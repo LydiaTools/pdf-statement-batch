@@ -1,0 +1,79 @@
+{
+  "dateFormat": "MM/DD/YYYY",
+  "currency": "USD",
+  "transactions": [
+    {
+      "file": "synthetic-ruled.pdf",
+      "page": 1,
+      "date": "10/01/2026",
+      "description": "COFFEE SHOP Store 042",
+      "debit": "12.30",
+      "credit": "",
+      "balance": "987.70"
+    },
+    {
+      "file": "synthetic-ruled.pdf",
+      "page": 1,
+      "date": "10/02/2026",
+      "description": "CLIENT PAYMENT Reference: WEB DESIGN",
+      "debit": "",
+      "credit": "250.00",
+      "balance": "1237.70"
+    },
+    {
+      "file": "synthetic-ruled.pdf",
+      "page": 2,
+      "date": "10/03/2026",
+      "description": "ONLINE ORDER Shipping included",
+      "debit": "45.67",
+      "credit": "",
+      "balance": "1192.03"
+    },
+    {
+      "file": "synthetic-ruled.pdf",
+      "page": 2,
+      "date": "10/04/2026",
+      "description": "CARD REFUND",
+      "debit": "",
+      "credit": "5.20",
+      "balance": "1197.23"
+    },
+    {
+      "file": "synthetic-borderless.pdf",
+      "page": 1,
+      "date": "10/05/2026",
+      "description": "TRANSFER OUT Reference: SAVINGS",
+      "debit": "100.00",
+      "credit": "",
+      "balance": "1097.23"
+    },
+    {
+      "file": "synthetic-borderless.pdf",
+      "page": 1,
+      "date": "10/06/2026",
+      "description": "PAYROLL October payment",
+      "debit": "",
+      "credit": "500.00",
+      "balance": "1597.23"
+    },
+    {
+      "file": "synthetic-borderless.pdf",
+      "page": 2,
+      "date": "10/07/2026",
+      "description": "SMALL CARD PURCHASE",
+      "debit": "0.09",
+      "credit": "",
+      "balance": "1597.14"
+    },
+    {
+      "file": "synthetic-borderless.pdf",
+      "page": 2,
+      "date": "10/08/2026",
+      "description": "INTEREST CREDIT",
+      "debit": "",
+      "credit": "0.01",
+      "balance": "1597.15"
+    }
+  ],
+  "scope": "Two original text PDFs; eight transactions, four pages. Not a bank-coverage benchmark."
+}

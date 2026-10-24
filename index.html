@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Review a batch of text-based PDF statements and export transactions to one Excel workbook.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; worker-src 'self'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>PDF Statement Batch — PDF statements to Excel</title>
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <aside class="rail">
+    <a class="brand" href="./" aria-label="PDF Statement Batch"><span class="brand-symbol" aria-hidden="true">≋</span><span>PDF<br>Statement<br>Batch</span></a>
+    <nav aria-label="Workspace">
+      <button class="nav selected" id="workspace" data-t="workspace">Statements</button>
+      <button class="nav" id="settings" data-t="settings">Settings</button>
+      <button class="nav" id="appearance" data-t="appearance">Appearance</button>
+    </nav>
+    <div class="rail-bottom"><button id="language">中文</button><a href="https://github.com/LydiaTools" target="_blank" rel="noopener">LydiaTools</a></div>
+  </aside>
+  <main>
+    <header class="top"><div><h1 data-t="heading">PDF statements to Excel</h1><p data-t="subheading">Add files, review transactions, download one workbook.</p></div><span id="runtime" role="status" data-t="notLoaded">Parser not loaded</span></header>
+    <section class="toolbar" aria-label="Batch actions">
+      <label class="button primary" id="add-files" for="files" role="button" tabindex="0" data-t="add">Add PDFs</label><input id="files" type="file" accept=".pdf,application/pdf" multiple class="file-input" tabindex="-1">
+      <button id="sample" data-t="sample">Try two sample PDFs</button>
+      <button id="run" disabled data-t="run">Process queue</button>
+      <button id="cancel" disabled data-t="cancel">Stop after current file</button>
+      <button id="resume" hidden data-t="resume">Resume canceled files</button>
+      <div class="spacer"></div><button id="export" disabled data-t="export">Download Excel</button>
+    </section>
+    <div class="batch-line"><p id="summary" role="status"></p><button id="clear" disabled data-t="clear">Clear batch</button></div>
+    <p id="message" role="alert" hidden></p>
+    <div class="workbench">
+      <section class="ledger" aria-labelledby="file-heading"><div class="section-heading"><h2 id="file-heading" data-t="files">Files</h2><span id="file-count">0</span></div><ol id="queue"></ol><div id="empty" class="empty"><span class="empty-icon" aria-hidden="true">▤</span><p data-t="empty">Select PDF statements to begin.</p><p class="small" data-t="sampleHint">The sample contains fictional transactions.</p></div></section>
+      <section class="sheet" aria-labelledby="sheet-heading">
+        <div class="section-heading"><div><h2 id="sheet-heading" data-t="transactions">Transactions</h2><p id="source"></p></div><a id="open-source" hidden target="_blank" rel="noopener" data-t="source">Open source PDF</a></div>
+        <div id="review-controls" hidden><label><span data-t="currency">Currency</span> <select id="currency" aria-label="Currency"><option value="" data-t="unconfirmed">Unconfirmed</option><option>USD</option><option>EUR</option><option>GBP</option><option>CNY</option><option>CAD</option><option>AUD</option><option>JPY</option><option>INR</option><option>CHF</option><option>SGD</option><option>HKD</option></select></label><button id="reviewed" data-t="markReviewed">Mark reviewed</button><span id="review-state"></span></div>
+        <div id="table-wrap" tabindex="0" role="region" aria-label="Extracted transactions"><p class="sheet-empty" data-t="selectFile">Select a processed file to review its rows.</p></div>
+        <div id="review-note" class="sheet-note" hidden data-t="reviewNote">Check the source before using these rows. Dates remain as printed. Edit a cell to correct it.</div>
+      </section>
+    </div>
+    <footer><details><summary data-t="help">Processing and privacy</summary><p data-t="privacy">PDFs are processed in this browser, without an upload or AI request. First use downloads the Python runtime and PDF library. Your batch stays in this tab and is cleared when it closes.</p><p data-t="scope">Text-based PDFs only. Scans need OCR elsewhere; password-protected files must be unlocked first. Extraction can miss or misread rows. Files with different columns or unconfirmed currencies are kept in separate sheets.</p><p data-t="precision">Source references identify the file and extracted row order, not an exact PDF page. Excel includes every file status, even when no transactions were extracted.</p><p><a href="./vendor/source.json" data-t="credits">Parser source and licenses</a></p></details></footer>
+  </main>
+  <dialog id="settings-dialog"><form method="dialog"><div class="dialog-heading"><h2 data-t="settings">Settings</h2><button value="close" aria-label="Close">×</button></div><label class="check"><input id="deduplicate" type="checkbox" checked><span data-t="skipDuplicates">Skip exact duplicate PDFs</span></label><p class="small" data-t="duplicateHelp">Duplicates stay in the file list and workbook. Different files are not deduplicated by transaction amount.</p><label class="check"><input id="numeric" type="checkbox" checked><span data-t="numeric">Export clear amount columns as numbers</span></label><p class="small" data-t="numericHelp">Other cells remain literal text. Dates are never converted.</p><button class="primary" value="close" data-t="done">Done</button></form></dialog>
+  <dialog id="appearance-dialog"><form method="dialog"><div class="dialog-heading"><h2 data-t="appearance">Appearance</h2><button value="close" aria-label="Close">×</button></div><label><span data-t="theme">Theme</span> <select id="theme"><option value="light" data-t="light">Paper</option><option value="dark" data-t="dark">Night</option></select></label><button class="primary" value="close" data-t="done">Done</button></form></dialog>
+  <script type="module" src="./app.js"></script>
+</body></html>

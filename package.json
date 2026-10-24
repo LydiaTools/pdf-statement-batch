@@ -1,0 +1,12 @@
+{
+  "name": "pdf-statement-batch",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/core.test.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "devDependencies": { "playwright": "1.62.1" }
+}

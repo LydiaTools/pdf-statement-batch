@@ -1,0 +1,37 @@
+{
+  "repository": "https://github.com/PriyanshuDangi/localbankstatementconverter",
+  "commit": "6a25c6fb1ec720bc8444e529fe004cc779ce1d5a",
+  "license": "MIT",
+  "copyright": "2026 Priyanshu Dangi",
+  "unmodifiedFiles": [
+    {
+      "source": "client/js/parsers/position-parser.js",
+      "target": "src/vendor/parsers/position-parser.js",
+      "sha256": "d8d582e31cacc5f6f87873cde364ad48889f1f18dd7781823b4f907fa87b4e9b"
+    },
+    {
+      "source": "client/js/parsers/rectangle-parser.js",
+      "target": "src/vendor/parsers/rectangle-parser.js",
+      "sha256": "be1b0beab5528f9ecc231640ac6628efdca8d6caa1d9fcfab23e0d32004195df"
+    },
+    {
+      "source": "client/js/parsers/generic-parser.js",
+      "target": "src/vendor/parsers/generic-parser.js",
+      "sha256": "c487d5933faad3e076357b1530cf9392557f1736a096b18204018cb379d0cb7d"
+    },
+    {
+      "source": "client/js/parsers/base-parser.js",
+      "target": "src/vendor/parsers/base-parser.js",
+      "sha256": "69c59a2602e9def5de20593085ada64aedcaaf258940f88c5c038b613f7e0184"
+    },
+    {
+      "source": "client/python/extract_text.py",
+      "target": "src/vendor/extract_text.py",
+      "sha256": "08be40d32d8ed3e4493b2bb7a1068e818bf86c96de9901103c32a7f542d661ea"
+    }
+  ],
+  "fflate": {
+    "version": "0.8.3",
+    "license": "MIT"
+  }
+}

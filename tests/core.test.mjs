@@ -1,8 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { numericValue, explicitCurrency, workbookSheets, groups } from '../src/core.js';
+import { numericValue, explicitCurrency, workbookSheets, groups, inputError } from '../src/core.js';
 import { writeWorkbook } from '../src/xlsx.js';
 import { unzipSync, strFromU8 } from '../src/vendor/fflate.js';
+test('the same file boundary applies before initial extraction and retries', () => {
+  assert.equal(inputError({name:'statement.pdf',size:50*1024*1024}), '');
+  assert.equal(inputError({name:'statement.pdf',size:50*1024*1024+1}), 'fileLimit');
+  assert.equal(inputError({name:'statement.txt',size:3}), 'unsupported');
+});
 test('ambiguous dates, locales and high precision remain text', () => {
   for (const value of ['1.234,56', '12,34', '000123', '1234567890123456.78', '=HYPERLINK("x")', '12 USD']) assert.equal(numericValue(value), null);
   assert.equal(numericValue('1,234.56'), '1234.56'); assert.equal(numericValue('0.09'), '0.09'); assert.equal(numericValue('-12.30'), '-12.30');

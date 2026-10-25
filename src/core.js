@@ -1,5 +1,10 @@
 export const STATUSES = ['queued', 'processing', 'parsed', 'failed', 'canceled', 'duplicate'];
 
+export function inputError(file) {
+  if (!/\.pdf$/i.test(file.name)) return 'unsupported';
+  return file.size > 50 * 1024 * 1024 ? 'fileLimit' : '';
+}
+
 export function explicitCurrency(text) {
   const found = [...String(text).matchAll(/\bCurrency\s*[:=]\s*([A-Z]{3})\b/g)].map(m => m[1]);
   return [...new Set(found)].length === 1 ? found[0] : '';

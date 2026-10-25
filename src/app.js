@@ -1,5 +1,5 @@
 import { parseWithPositions } from './vendor/parsers/generic-parser.js';
-import { explicitCurrency, groups, moneyHeader, workbookSheets } from './core.js';
+import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError } from './core.js';
 import { writeWorkbook } from './xlsx.js';
 import { strings } from './i18n.js';
 import { saveBatch, openBatch } from './session.js';
@@ -74,8 +74,8 @@ function renderSheet() {
 function addFiles(incoming) {
   for (const file of incoming) {
     const item = { id: nextId++, name: file.name, file, status: 'queued', rows: [], headers: [], currency: '', reviewed: false, edits: 0 };
-    if (!/\.pdf$/i.test(file.name)) Object.assign(item, { status: 'failed', errorKey: 'unsupported', error: strings.en.unsupported });
-    else if (file.size > 50 * 1024 * 1024) Object.assign(item, { status: 'failed', errorKey: 'fileLimit', error: strings.en.fileLimit });
+    const errorKey = inputError(file);
+    if (errorKey) Object.assign(item, { status: 'failed', errorKey, error: strings.en[errorKey] });
     files.push(item);
   }
   if (!selected) selected = files[0]?.id;
@@ -121,6 +121,8 @@ async function run() {
       if (stop) { f.status = 'canceled'; continue; }
       f.status = 'processing'; render();
       try {
+        const errorKey = inputError(f.file);
+        if (errorKey) { fail(f, errorKey); render(); continue; }
         const bytes = await f.file.arrayBuffer();
         f.hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(x => x.toString(16).padStart(2, '0')).join('');
         const original = $('deduplicate').checked && files.find(x => x.id < f.id && x.hash === f.hash && x.status === 'parsed');

@@ -67,5 +67,27 @@
     "restoredBeforeResume": true
   },
   "pageErrors": [],
-  "scope": "Two original synthetic layouts. Includes actual batch ZIP/save/reopen and pending source-file resume; not real-bank coverage or external adoption."
+  "scope": "Two original synthetic layouts. Includes actual batch ZIP/save/reopen and pending source-file resume; not real-bank coverage or external adoption.",
+  "sessionPreferences": {
+    "at": "2026-10-25T04:50:30.095Z",
+    "tabActuallyClosed": true,
+    "reopenedDisconnected": true,
+    "originalFiles": 2,
+    "rows": 8,
+    "restored": [
+      "selectedFile",
+      "editedRows",
+      "reviewFlags",
+      "English",
+      "darkTheme",
+      "numericTextSetting",
+      "deduplicationSetting"
+    ],
+    "pdfWorkerStarted": false,
+    "externalRequests": 0,
+    "mobileWidth": 390,
+    "batchMenuInsideViewport": true,
+    "sourceCommit": "f35d312db3d21cb1e81603f4a2864dced2a3f807",
+    "ciRun": 40163253220
+  }
 }

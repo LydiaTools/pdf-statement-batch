@@ -41,7 +41,7 @@ export async function openBatch(bytes) {
       expandedBytes += item.originalSize;
       if (++count > 1002 || !Number.isSafeInteger(item.originalSize) || item.originalSize < 0 || expandedBytes > MAX_BATCH_BYTES + MAX_METADATA_BYTES) tooLarge();
       if (item.name === 'batch.json' && item.originalSize > MAX_METADATA_BYTES) tooLarge();
-      if (item.name.startsWith('files/') && item.originalSize > 50 * 1024 * 1024) tooLarge();
+      if (item.name.startsWith('files/') && item.originalSize > MAX_BATCH_BYTES) tooLarge();
       if (item.name === 'batch.sha256' && item.originalSize !== 64) invalid();
       return true;
     } });

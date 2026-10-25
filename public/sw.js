@@ -1,6 +1,6 @@
-const CACHE = 'pdf-statement-batch-preview-1';
+const CACHE = 'pdf-statement-batch-preview-2';
 const base = new URL('./', self.location.href);
-const assets = ['./', './app.js', './style.css', './core.js', './xlsx.js', './i18n.js', './worker.js', './vendor/fflate.js', './vendor/extract_text.py', './vendor/pdfminer_six-20260107-py3-none-any.whl', './vendor/source.json', './vendor/LICENSE-localbankstatementconverter.txt', './vendor/LICENSE-fflate.txt', './vendor/parsers/base-parser.js', './vendor/parsers/generic-parser.js', './vendor/parsers/position-parser.js', './vendor/parsers/rectangle-parser.js', './samples/synthetic-ruled.pdf', './samples/synthetic-borderless.pdf'];
+const assets = ['./', './app.js', './session.js', './style.css', './core.js', './xlsx.js', './i18n.js', './worker.js', './vendor/fflate.js', './vendor/extract_text.py', './vendor/pdfminer_six-20260107-py3-none-any.whl', './vendor/source.json', './vendor/LICENSE-localbankstatementconverter.txt', './vendor/LICENSE-fflate.txt', './vendor/parsers/base-parser.js', './vendor/parsers/generic-parser.js', './vendor/parsers/position-parser.js', './vendor/parsers/rectangle-parser.js', './samples/synthetic-ruled.pdf', './samples/synthetic-borderless.pdf'];
 self.addEventListener('install', event => event.waitUntil((async () => {
   await (await caches.open(CACHE)).addAll(assets.map(path => new URL(path, base).href));
   await self.skipWaiting();

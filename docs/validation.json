@@ -1,16 +1,22 @@
 {
-  "observedAt": "2026-10-24T17:06:46.927Z",
+  "observedAt": "2026-10-25T04:38:23.440Z",
+  "version": "0.2.0",
   "browser": "156.0.8078.47",
-  "environment": "macOS, isolated headless browser; local app server",
+  "environment": "macOS isolated headless browser; local server",
   "checks": [
     {
       "name": "real browser two-PDF extraction and actual workbook download",
       "files": 2,
       "rows": 8,
-      "elapsedMs": 117773
+      "elapsedMs": 6356
     },
     {
       "name": "editable literal text, review state, EN/Chinese and 390px layout"
+    },
+    {
+      "name": "saved batch restores original PDFs, corrected cells and review state after disconnected reload without parsing; invalid input leaves work intact",
+      "files": 2,
+      "rows": 8
     },
     {
       "name": "warm-cache disconnected reload, extraction and workbook download",
@@ -24,17 +30,17 @@
       "failed": 4
     },
     {
-      "name": "500 byte-distinct PDFs, each actually parsed; stop, accounting and resume",
+      "name": "500 byte-distinct PDFs; stop, save, disconnected reload, reopen and resume pending original files",
       "layouts": 2,
       "files": 500,
       "rows": 2000,
       "skippedDuplicates": 0,
       "paused": {
-        "parsed": 11,
-        "canceled": 489
+        "parsed": 12,
+        "canceled": 488
       },
-      "elapsedMs": 13570,
-      "sampledBrowserPeakRssKiB": 1386816,
+      "elapsedMs": 15558,
+      "sampledBrowserPeakRssKiB": 1513072,
       "memorySamples": 4,
       "memoryScope": "RSS sum of this test browser process tree sampled every 5 seconds; not a continuous peak or general hardware benchmark"
     }
@@ -48,23 +54,18 @@
     "layouts": 2,
     "scope": "byte-distinct variants of two synthetic PDFs; no bank accuracy claim",
     "canceledWorkbookStatuses": {
-      "parsed": 11,
-      "canceled": 489
+      "parsed": 12,
+      "canceled": 488
     },
     "mixedWorkbookStatuses": {
       "parsed": 2,
       "duplicate": 1,
       "failed": 4
     },
-    "workbookSha256": "387946b4ebf642841e874c5e9f860974a2f98a8c1b1d0d5e5791e72bb06d46ba"
+    "workbookSha256": "5a06154f58f1a7a6df534fe24e877b50a287be42ae5d15d3e23bcd2bbd761ed7",
+    "savedBatchOriginalsChecked": 500,
+    "restoredBeforeResume": true
   },
   "pageErrors": [],
-  "networkMethods": [
-    "GET"
-  ],
-  "networkOrigins": [
-    "local app server",
-    "version-pinned cdn.jsdelivr.net runtime"
-  ],
-  "scope": "Original synthetic inputs only. Not 500 banks, OCR coverage, calibrated accuracy, external adoption or a performance guarantee."
+  "scope": "Two original synthetic layouts. Includes actual batch ZIP/save/reopen and pending source-file resume; not real-bank coverage or external adoption."
 }

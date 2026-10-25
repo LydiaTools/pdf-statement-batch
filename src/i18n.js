@@ -6,3 +6,23 @@ export const strings = {
   workspace:'对账单',settings:'设置',appearance:'换肤',heading:'对账单合表',subheading:'添加 PDF，核对交易，下载一个 Excel。',notLoaded:'解析器未加载',add:'添加 PDF',sample:'试用两份示例 PDF',run:'处理队列',cancel:'处理完当前文件后停止',resume:'继续已取消的文件',export:'下载 Excel',clear:'清空本批',files:'文件',empty:'选择 PDF 对账单开始。',sampleHint:'示例中的交易均为虚构。',transactions:'交易明细',source:'打开原 PDF',currency:'币种',unconfirmed:'未确认',markReviewed:'标记已核对',selectFile:'选择已处理的文件，核对交易明细。',reviewNote:'使用前请核对原 PDF。日期保留原文；点击单元格可修改。',help:'处理与隐私',privacy:'PDF 在当前浏览器内处理，不上传文件，不调用 AI。首次使用需下载 Python 运行环境和 PDF 解析库。本批文件和明细仅留在当前标签页，关闭后清除。',scope:'支持文字型 PDF。扫描件需先用其他工具识别；加密文件需先解锁。解析可能遗漏或读错交易。列结构不同或币种未确认的文件会分表导出。',precision:'来源只标记文件及提取行序，不提供精确 PDF 页码。Excel 包含全部文件状态，包括未提取到交易的文件。',credits:'解析器来源与许可',skipDuplicates:'跳过内容完全相同的 PDF',duplicateHelp:'重复文件仍显示在文件列表和 Excel 中；不会仅凭金额去重交易。',numeric:'将明确的金额列导出为数字',numericHelp:'其他单元格保留为纯文本，日期不做转换。',done:'完成',theme:'主题',light:'纸白',dark:'夜色',queued:'待处理',processing:'处理中',parsed:'已提取',failed:'需检查',canceled:'已取消',duplicate:'内容完全重复',reviewed:'已核对',notReviewed:'未核对',rows:'行',retry:'重试此文件',duplicateOf:'与队列文件内容相同',noText:'没有可提取的文字。扫描件需先识别。',noRows:'未找到交易。请检查原文件格式。',unsupported:'请选择 PDF 文件。',invalid:'PDF 无效或无法读取。',encrypted:'文件有密码或已加密。解锁后请重新添加。',runtime:'正在加载 Python 运行环境…',libraries:'正在加载 PDF 解析库…',ready:'解析器已就绪',starting:'准备解析器…',runtimeFailed:'解析器加载失败。请检查网络后重试。',fileCount:'份文件',groupCount:'张明细表',clearConfirm:'清空本批？当前标签页中的 PDF 和提取明细将被移除。',loadSampleFailed:'示例加载失败，请检查网络后重试。',fileLimit:'此预览版不支持超过 50 MB 的单个文件。',changed:'已修改 · 未核对',stopping:'当前文件处理完成后停止…',noFiles:'尚未选择文件',unprocessed:'此文件尚未处理。',samplesLoaded:'已添加两份虚构示例。',exportFailed:'Excel 生成失败，本批文件仍在。',initFailed:'解析器加载失败，待处理文件已保留。',pdfTimeout:'提取超过 90 秒。检查文件后可重试。',partialGraphics:'无法提取表格边界，请仔细检查交易。'
  }
 };
+Object.assign(strings.en, {
+  privacy: 'PDFs are processed in this browser, without an upload or AI request. First use downloads the Python runtime and PDF library. Closing the tab clears its batch. To continue later, save a batch ZIP containing the original PDFs, edits and review progress, then reopen that file.',
+  batchMenu: 'Batch', saveBatch: 'Save batch (.zip)', openBatch: 'Open saved batch',
+  batchContents: 'Includes PDFs, edits and review progress.',
+  replaceBatch: 'Replace the current batch with this saved batch? Save your current batch first if you need it.',
+  invalidBatch: 'This is not a valid saved batch. Your current batch is unchanged.',
+  batchCorrupt: 'The saved batch failed its integrity check. Your current batch is unchanged.',
+  batchTooLarge: 'Saved batches support up to 100 MB of source files and 1,000 files. Split this batch or export Excel.',
+  saveBatchFailed: 'The batch could not be saved. Your files and edits are still in this tab.'
+});
+Object.assign(strings.zh, {
+  privacy: 'PDF 在当前浏览器内处理，不上传、不调用 AI。首次使用需下载 Python 环境和解析库。关闭标签页会清除当前批次；如需稍后继续，请保存批次 ZIP，之后重新打开。ZIP 包含原 PDF、修改内容和核对进度。',
+  batchMenu: '批次', saveBatch: '保存批次 (.zip)', openBatch: '打开已保存批次',
+  batchContents: '包含原 PDF、修改内容和核对进度。',
+  replaceBatch: '用保存的批次替换当前批次？如需保留当前内容，请先保存当前批次。',
+  invalidBatch: '这不是有效的批次文件，当前批次未改变。',
+  batchCorrupt: '批次文件完整性检查未通过，当前批次未改变。',
+  batchTooLarge: '保存批次最多支持 100 MB 原文件、1,000 份文件。请拆分批次，或导出 Excel。',
+  saveBatchFailed: '批次保存失败，文件和修改仍保留在当前标签页。'
+});

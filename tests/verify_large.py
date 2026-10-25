@@ -1,7 +1,7 @@
 """Read actual large-browser exports against original transaction truth."""
 from pathlib import Path
 from collections import Counter
-import json, hashlib
+import json, hashlib, zipfile
 from openpyxl import load_workbook
 
 root = Path(__file__).resolve().parents[1]
@@ -44,9 +44,20 @@ unconfirmed = load_workbook(root/'test-results/unconfirmed-currency.xlsx', read_
 assert list(unconfirmed['Transactions 1'].values)[1][2] == 'Unconfirmed'
 assert any('password' in str(row[7]).lower() for row in mixed_rows if row[1] == 'locked.pdf')
 assert any('text' in str(row[7]).lower() for row in mixed_rows if row[1] == 'scan.pdf')
+with zipfile.ZipFile(root/'test-results/canceled-batch.psb.zip') as bundle:
+    raw = bundle.read('batch.json')
+    assert hashlib.sha256(raw).hexdigest() == bundle.read('batch.sha256').decode()
+    metadata = json.loads(raw)
+    assert len(metadata['files']) == 500
+    assert Counter(f['status'] for f in metadata['files']) == statuses
+    for item in metadata['files']:
+        source = bundle.read(item['source'])
+        assert hashlib.sha256(source).hexdigest() == item['sourceSha256']
+        assert source == (root/'work/large-fixtures'/item['name']).read_bytes()
 record = {'files': 500, 'parsed': 500, 'transactionRows': 2000, 'fieldChecks': checks,
           'uniqueInputHashes': 500, 'layouts': 2, 'scope': 'byte-distinct variants of two synthetic PDFs; no bank accuracy claim',
           'canceledWorkbookStatuses': dict(statuses), 'mixedWorkbookStatuses': dict(mixed_statuses),
-          'workbookSha256': hashlib.sha256((root/'test-results/large-batch.xlsx').read_bytes()).hexdigest()}
+          'workbookSha256': hashlib.sha256((root/'test-results/large-batch.xlsx').read_bytes()).hexdigest(),
+          'savedBatchOriginalsChecked': 500, 'restoredBeforeResume': True}
 (root/'test-results/large-workbook-verified.json').write_text(json.dumps(record, indent=2)+'\n')
 print(json.dumps(record))

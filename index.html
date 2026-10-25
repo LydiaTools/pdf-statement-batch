@@ -25,7 +25,8 @@
       <button id="run" disabled data-t="run">Process queue</button>
       <button id="cancel" disabled data-t="cancel">Stop after current file</button>
       <button id="resume" hidden data-t="resume">Resume canceled files</button>
-      <div class="spacer"></div><button id="export" disabled data-t="export">Download Excel</button>
+      <div class="spacer"></div><div class="download-actions"><button id="export" disabled data-t="export">Download Excel</button>
+      <details id="batch-menu"><summary data-t="batchMenu">Batch</summary><div class="batch-options"><button id="save-batch" disabled data-t="saveBatch">Save batch (.zip)</button><label id="open-batch-label" role="button" tabindex="0" for="open-batch" data-t="openBatch">Open saved batch</label><input id="open-batch" type="file" accept=".zip,application/zip" class="file-input" tabindex="-1"><p data-t="batchContents">Includes PDFs, edits and review progress.</p></div></details></div>
     </section>
     <div class="batch-line"><p id="summary" role="status"></p><button id="clear" disabled data-t="clear">Clear batch</button></div>
     <p id="message" role="alert" hidden></p>

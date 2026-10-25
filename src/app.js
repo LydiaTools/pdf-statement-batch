@@ -2,6 +2,7 @@ import { parseWithPositions } from './vendor/parsers/generic-parser.js';
 import { explicitCurrency, groups, moneyHeader, workbookSheets } from './core.js';
 import { writeWorkbook } from './xlsx.js';
 import { strings } from './i18n.js';
+import { saveBatch, openBatch } from './session.js';
 
 const $ = id => document.getElementById(id);
 let language = new URLSearchParams(location.search).get('lang') === 'zh' ? 'zh' : 'en';
@@ -9,6 +10,7 @@ let files = [], nextId = 1, selected = null, running = false, stop = false;
 let worker = null, ready = false, requestId = 0, pending = new Map(), runtimeState = 'notLoaded';
 let sourceURL;
 let sheetSignature = '';
+let batchBusy = false;
 const t = key => strings[language][key] || key;
 const escape = value => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 function message(key) { $('message').textContent = key ? t(key) : ''; $('message').hidden = !key; }
@@ -27,16 +29,20 @@ function render() {
   $('file-count').textContent = files.length;
   $('empty').hidden = files.length > 0;
   $('queue').innerHTML = files.map(f => `<li><button class="file${selected === f.id ? ' active' : ''}" data-id="${f.id}" aria-pressed="${selected === f.id}"><span class="file-content"><span class="filename">${escape(f.name)}</span><span class="file-status ${f.status}">${t(f.status)}${f.status === 'parsed' ? ` · ${f.rows.length} ${t('rows')}` : ''}${f.reviewed ? ` · ${t('reviewed')}` : ''}</span></span></button></li>`).join('');
-  $('run').disabled = running || !files.some(f => f.status === 'queued');
+  $('run').disabled = running || batchBusy || !files.some(f => f.status === 'queued');
   $('cancel').disabled = !running || stop;
   $('cancel').textContent = t(stop ? 'stopping' : 'cancel');
   $('resume').hidden = running || !files.some(f => f.status === 'canceled');
-  $('clear').disabled = running || !files.length;
-  $('sample').disabled = running;
-  $('files').disabled = running;
-  $('add-files').setAttribute('aria-disabled', String(running));
-  document.querySelector('label[for=files]').style.opacity = running ? '.45' : '1';
-  $('export').disabled = running || !files.length;
+  $('clear').disabled = running || batchBusy || !files.length;
+  $('sample').disabled = running || batchBusy;
+  $('files').disabled = running || batchBusy;
+  $('add-files').setAttribute('aria-disabled', String(running || batchBusy));
+  document.querySelector('label[for=files]').style.opacity = running || batchBusy ? '.45' : '1';
+  $('export').disabled = running || batchBusy || !files.length;
+  $('save-batch').disabled = running || batchBusy || !files.length;
+  $('open-batch').disabled = running || batchBusy;
+  $('open-batch-label').setAttribute('aria-disabled', String(running || batchBusy));
+  document.querySelector('.workbench').inert = batchBusy;
   renderSheet();
 }
 function renderSheet() {
@@ -49,7 +55,7 @@ function renderSheet() {
   $('source').textContent = f ? f.name : '';
   $('open-source').hidden = !f;
   if (sourceURL) URL.revokeObjectURL(sourceURL);
-  sourceURL = f ? URL.createObjectURL(f.file) : null;
+  sourceURL = f ? URL.createObjectURL(new Blob([f.file], { type: 'application/pdf' })) : null;
   if (sourceURL) $('open-source').href = sourceURL;
   if (!f) { $('table-wrap').innerHTML = `<p class="sheet-empty">${t('selectFile')}</p>`; return; }
   if (f.status !== 'parsed') {
@@ -184,6 +190,38 @@ $('settings').onclick = () => $('settings-dialog').showModal();
 $('appearance').onclick = () => $('appearance-dialog').showModal();
 $('theme').onchange = () => document.body.classList.toggle('dark', $('theme').value === 'dark');
 $('workspace').onclick = () => $('files').focus();
+function downloadFile(bytes, type, name) {
+  const url = URL.createObjectURL(new Blob([bytes], { type }));
+  const link = document.createElement('a'); link.href = url; link.download = name; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+$('save-batch').onclick = async () => {
+  if (running || batchBusy) return;
+  batchBusy = true; message(''); render();
+  try {
+    const bytes = await saveBatch(files, { language, selected, theme: $('theme').value, numeric: $('numeric').checked, deduplicate: $('deduplicate').checked });
+    downloadFile(bytes, 'application/zip', 'pdf-statement-batch.psb.zip');
+    $('batch-menu').open = false;
+  } catch (error) { message(error.message === 'batchTooLarge' ? 'batchTooLarge' : 'saveBatchFailed'); }
+  finally { batchBusy = false; render(); }
+};
+$('open-batch-label').onkeydown = event => { if (['Enter',' '].includes(event.key)) { event.preventDefault(); if (!running && !batchBusy) $('open-batch').click(); } };
+$('open-batch').onchange = async event => {
+  const source = event.target.files[0]; event.target.value = '';
+  if (!source || running || batchBusy) return;
+  batchBusy = true; message(''); render();
+  try {
+    if (source.size > 110 * 1024 * 1024) throw new Error('batchTooLarge');
+    const restored = await openBatch(new Uint8Array(await source.arrayBuffer()));
+    if (files.length && !confirm(t('replaceBatch'))) return;
+    files = restored.files; selected = restored.options.selected; nextId = Math.max(...files.map(f => f.id)) + 1;
+    language = restored.options.language; $('theme').value = restored.options.theme;
+    document.body.classList.toggle('dark', restored.options.theme === 'dark');
+    $('numeric').checked = restored.options.numeric; $('deduplicate').checked = restored.options.deduplicate;
+    sheetSignature = ''; localize(); $('batch-menu').open = false;
+  } catch (error) { message(['batchTooLarge','batchCorrupt'].includes(error.message) ? error.message : 'invalidBatch'); }
+  finally { batchBusy = false; render(); }
+};
 window.addEventListener('beforeunload', event => { if (files.length) { event.preventDefault(); event.returnValue = ''; } });
 localize();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});

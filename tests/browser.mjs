@@ -27,6 +27,8 @@ page.on('worker',worker=>console.log('WORKER',worker.url()));
 async function download(name) {const wait=page.waitForEvent('download');await page.locator('#export').click();const d=await wait;await d.saveAs(resolve(out,name));return name;}
 async function finished(timeout=240000){await page.waitForFunction(()=>document.getElementById('cancel').disabled && !document.getElementById('clear').disabled,{},{timeout});}
 async function clear(){page.once('dialog',d=>d.accept());await page.locator('#clear').click();}
+async function saveSession(name){await page.locator('#batch-menu summary').click();const wait=page.waitForEvent('download');await page.locator('#save-batch').click();const d=await wait;assert.equal(d.suggestedFilename(),'pdf-statement-batch.psb.zip');await d.saveAs(resolve(out,name));}
+async function reload(){page.once('dialog',d=>d.accept());await page.reload();}
 try {
   await page.goto(address);
   await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});
@@ -48,10 +50,22 @@ try {
   await page.locator('#reviewed').click();
   await page.locator('#language').click();assert.equal(await page.locator('#review-state').innerText(),'已核对');
   await download('edited-zh.xlsx');
+  await saveSession('edited-batch.psb.zip');
   checks.push({name:'editable literal text, review state, EN/Chinese and 390px layout'});
   await page.setViewportSize({width:1440,height:1000});
   const beforeOffline=requests.length;
-  await context.setOffline(true);page.once('dialog',d=>d.accept());await page.reload();
+  await context.setOffline(true);await reload();
+  assert.equal(await page.locator('#queue li').count(),0);
+  await page.locator('#open-batch').setInputFiles(resolve(out,'edited-batch.psb.zip'));
+  await page.waitForFunction(()=>document.querySelectorAll('.file-status.parsed').length===2);
+  assert.equal(await page.locator('textarea[data-row="0"][data-column="1"]').inputValue(),'=HYPERLINK("https://example.invalid", "literal text")');
+  assert.equal(await page.locator('#review-state').innerText(),'已核对');assert.equal(page.workers().length,0);
+  await download('restored-zh.xlsx');
+  await page.locator('#open-batch').setInputFiles({name:'invalid.zip',mimeType:'application/zip',buffer:Buffer.from('invalid saved batch')});
+  await page.waitForFunction(()=>!document.getElementById('message').hidden);
+  assert.equal(await page.locator('#queue li').count(),2);assert.equal(await page.locator('#review-state').innerText(),'已核对');
+  checks.push({name:'saved batch restores original PDFs, corrected cells and review state after disconnected reload without parsing; invalid input leaves work intact',files:2,rows:8});
+  await clear();
   await page.locator('#sample').click();await page.waitForFunction(()=>document.querySelectorAll('#queue li').length===2);await page.locator('#run').click();await finished();
   assert.equal(await page.locator('.file-status.parsed').count(),2);
   await download('cached-offline.xlsx');
@@ -82,6 +96,11 @@ try {
   const paused={parsed:await page.locator('.file-status.parsed').count(),canceled:await page.locator('.file-status.canceled').count()};
   assert.equal(paused.parsed+paused.canceled,500);assert(paused.canceled>0);
   await download('canceled-batch.xlsx');
+  await saveSession('canceled-batch.psb.zip');
+  await context.setOffline(true);await reload();
+  await page.locator('#open-batch').setInputFiles(resolve(out,'canceled-batch.psb.zip'));
+  await page.waitForFunction(()=>document.querySelectorAll('#queue li').length===500);
+  assert.equal(await page.locator('.file-status.canceled').count(),paused.canceled);
   const cdp=await browser.newBrowserCDPSession();let peakRssKiB=0,samples=0;
   async function memory(){try {const info=await cdp.send('SystemInfo.getProcessInfo');const ids=info.processInfo.map(x=>x.id);const raw=execFileSync('/bin/ps',['-o','rss=','-p',ids.join(',')],{encoding:'utf8'});peakRssKiB=Math.max(peakRssKiB,raw.trim().split(/\s+/).map(Number).reduce((s,n)=>s+n,0));samples++;}catch{}}
   const interval=setInterval(async()=>{await memory();console.log('LARGE',await page.locator('#summary').innerText())},5000);
@@ -90,7 +109,7 @@ try {
   assert.equal(await page.locator('.file-status.parsed').count(),500);assert.equal(await page.locator('.file-status.duplicate').count(),0);
   assert.equal(await page.locator('.file-status.failed').count(),0);assert.match(await page.locator('#summary').innerText(),/2000/);
   await download('large-batch.xlsx');
-  checks.push({name:'500 byte-distinct PDFs, each actually parsed; stop, accounting and resume',layouts:2,files:500,rows:2000,skippedDuplicates:0,paused,elapsedMs:Date.now()-largeStart,sampledBrowserPeakRssKiB:peakRssKiB,memorySamples:samples,memoryScope:'RSS sum of this test browser process tree sampled every 5 seconds; not a continuous peak or general hardware benchmark'});
+  checks.push({name:'500 byte-distinct PDFs; stop, save, disconnected reload, reopen and resume pending original files',layouts:2,files:500,rows:2000,skippedDuplicates:0,paused,elapsedMs:Date.now()-largeStart,sampledBrowserPeakRssKiB:peakRssKiB,memorySamples:samples,memoryScope:'RSS sum of this test browser process tree sampled every 5 seconds; not a continuous peak or general hardware benchmark'});
   await writeFile(resolve(out,'browser-verified.json'),JSON.stringify({completedAt:new Date().toISOString(),browser:browser.version(),checks,errors,requests},null,2)+'\n');
   assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,checks:checks.length,output:out}));
 } catch(error) {

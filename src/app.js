@@ -58,8 +58,12 @@ function renderDateObservation(file) {
 function renderSheet() {
   const f = files.find(f => f.id === selected);
   renderDateObservation(f);
-  const signature = JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language,running]);
-  if (signature === sheetSignature) return;
+  const signature = JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language]);
+  if (signature === sheetSignature) {
+    const retry = $('retry');
+    if (retry) retry.disabled = running;
+    return;
+  }
   sheetSignature = signature;
   $('review-controls').hidden = f?.status !== 'parsed';
   $('review-note').hidden = f?.status !== 'parsed';

@@ -37,9 +37,18 @@ try {
     await page.locator('.file').nth(1).click();
     await page.locator('#run').click();
     assert.equal(await page.locator('#retry').isDisabled(),true,'retry must remain disabled while another file is processed');
+    await page.locator('.file').first().click();
+    const editing=page.locator('#table-wrap tbody tr').first().locator('textarea').nth(1);
+    await editing.fill('UNBLURRED_SENTINEL');
     await page.waitForFunction(()=>document.querySelector('#cancel').disabled && document.querySelectorAll('.file-status')[2]?.textContent.includes('已提取'),null,{timeout:10000});
+    assert.equal(await editing.inputValue(),'UNBLURRED_SENTINEL','unblurred edit must survive queue completion');
+    assert.equal(await editing.evaluate(el=>document.activeElement===el),true,'focused editor must not be replaced');
+    await editing.blur();
+    await page.locator('.file').nth(1).click();
     assert.equal(await page.locator('#retry').isEnabled(),true,'retry must re-enable after another file finishes');
     await page.locator('.file').first().click();
+    assert.equal(await page.locator('#table-wrap tbody tr').first().locator('textarea').nth(1).inputValue(),'UNBLURRED_SENTINEL','blurred edit must persist when revisiting');
+    const workbook=page.waitForEvent('download'); await page.locator('#export').click(); await (await workbook).saveAs('test-results/unblurred-check.xlsx');
     assert.match(await page.locator('.file-status').first().textContent(),/已提取/);
   }
   if (process.env.REAL_PARSER) {

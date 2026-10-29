@@ -29,3 +29,9 @@ Object.assign(strings.zh, {
 
 Object.assign(strings.en, { diagnostic: 'Download diagnostic', diagnosticNote: 'Fixed error category and counts only. No PDF or transaction details; not an anonymized statement.' });
 Object.assign(strings.zh, { diagnostic: '下载诊断', diagnosticNote: '仅含固定错误类别和数量，不含 PDF 或交易明细；不是脱敏账单。' });
+
+Object.assign(strings.en, { noDateColumn: 'No recognized date column. Compare the extracted rows with the original PDF.', emptyDateRows: 'rows have no value in any recognized date column. Compare with the original PDF.', oneEmptyDateRow: 'row has no value in any recognized date column. Compare with the original PDF.' });
+Object.assign(strings.zh, { noDateColumn: '未识别到日期列。请对照原 PDF 检查提取行。', emptyDateRows: '行在所有已识别日期列中均为空，请对照原 PDF 检查。', oneEmptyDateRow: '行在所有已识别日期列中均为空，请对照原 PDF 检查。' });
+
+Object.assign(strings.en, { fallbackAmount: 'Text-based extraction can change amount signs or precision. Amounts are not filled automatically; enter or verify each against the original PDF.', unknownAmount: 'The extraction method is unavailable or was not recorded. Compare every amount with the original PDF.' });
+Object.assign(strings.zh, { fallbackAmount: '文本回退解析可能改变金额符号或精度，金额未自动填写；请逐项对照原 PDF 填写或核对。', unknownAmount: '解析方式不可用或未记录，请逐项对照原 PDF 核对金额。' });

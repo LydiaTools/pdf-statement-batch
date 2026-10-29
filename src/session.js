@@ -21,6 +21,7 @@ export async function saveBatch(files, options) {
     records.push({ id: file.id, name: file.name, status: file.status === 'processing' ? 'queued' : file.status,
       headers: file.headers, rows: file.rows, currency: file.currency, reviewed: file.reviewed,
       edits: file.edits, hash: file.hash || '', duplicateOf: file.duplicateOf || null,
+      parserMode: ['text-based','other'].includes(file.parserMode) ? file.parserMode : 'unknown',
       pages: file.pages || 0, errorKey: file.errorKey || '', error: file.error || '', source, sourceSha256: hash });
   }
   const metadata = strToU8(JSON.stringify({ format: 'pdf-statement-batch', version: 1, savedAt: new Date().toISOString(), options, files: records }));
@@ -64,6 +65,7 @@ export async function openBatch(bytes) {
     if (!Array.isArray(record.rows) || typeof record.currency !== 'string' || !/^(|[A-Z]{3})$/.test(record.currency) || typeof record.reviewed !== 'boolean') invalid();
     if (!Number.isSafeInteger(record.edits) || record.edits < 0 || !Number.isSafeInteger(record.pages) || record.pages < 0) invalid();
     if (typeof record.errorKey !== 'string' || typeof record.error !== 'string' || typeof record.hash !== 'string' || !/^(|[0-9a-f]{64})$/.test(record.hash)) invalid();
+    if (record.parserMode !== undefined && !['text-based','other','unknown'].includes(record.parserMode)) invalid();
     if (record.status === 'parsed' ? !record.headers.length || !record.rows.length : record.rows.length > 0) invalid();
     for (const row of record.rows) {
       if (!row || typeof row !== 'object' || Array.isArray(row) || Object.keys(row).length !== record.headers.length || record.headers.some(h => !Object.hasOwn(row, h) || typeof row[h] !== 'string')) invalid();
@@ -77,6 +79,7 @@ export async function openBatch(bytes) {
     files.push({ id: record.id, name: record.name, status: record.status === 'processing' ? 'queued' : record.status,
       headers: [...record.headers], rows: record.rows.map(row => Object.fromEntries(record.headers.map(h => [h, row[h]]))),
       currency: record.currency, reviewed: record.reviewed, edits: record.edits, hash: record.hash,
+      parserMode: record.parserMode ?? 'unknown',
       duplicateOf: record.duplicateOf, pages: record.pages, errorKey: record.errorKey, error: record.error,
       file: new File([entries[source]], record.name, { type: /\.pdf$/i.test(record.name) ? 'application/pdf' : 'application/octet-stream' }),
       sourceSha256: actualHash });

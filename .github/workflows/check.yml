@@ -28,6 +28,9 @@ jobs:
           python scripts/failure_fixtures.py
           python scripts/schema_fixture.py
       - run: node tests/diagnostic-browser.mjs
+      - run: node tests/date-observation-browser.mjs
+      - run: UNKNOWN_PARSER=1 node tests/date-observation-browser.mjs
+      - run: node tests/fallback-browser.mjs
       - run: node tests/browser.mjs
       - run: node tests/session-ui.mjs
       - run: |

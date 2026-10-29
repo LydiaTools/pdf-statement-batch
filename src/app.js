@@ -1,5 +1,5 @@
 import { parseWithPositions } from './vendor/parsers/generic-parser.js';
-import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError, failureDiagnostic } from './core.js';
+import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError, failureDiagnostic, dateObservations, mapTransactionRows, classifyParserMode } from './core.js';
 import { writeWorkbook } from './xlsx.js';
 import { strings } from './i18n.js';
 import { saveBatch, openBatch } from './session.js';
@@ -45,8 +45,19 @@ function render() {
   document.querySelector('.workbench').inert = batchBusy;
   renderSheet();
 }
+function renderDateObservation(file) {
+  const el = $('date-observation');
+  const amountEl = $('amount-observation');
+  amountEl.hidden = !file || file.status !== 'parsed' || file.parserMode === 'other';
+  amountEl.textContent = amountEl.hidden ? '' : t(file.parserMode === 'text-based' ? 'fallbackAmount' : 'unknownAmount');
+  if (!file || file.status !== 'parsed') { el.hidden = true; el.textContent = ''; return; }
+  const finding = dateObservations(file.headers, file.rows);
+  el.hidden = finding.kind === 'none';
+  el.textContent = finding.kind === 'no-date-column' ? t('noDateColumn') : finding.kind === 'empty-date-rows' ? `${finding.count} ${t(finding.count === 1 ? 'oneEmptyDateRow' : 'emptyDateRows')}` : '';
+}
 function renderSheet() {
   const f = files.find(f => f.id === selected);
+  renderDateObservation(f);
   const signature = JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language,running]);
   if (signature === sheetSignature) return;
   sheetSignature = signature;
@@ -143,7 +154,8 @@ async function run() {
           if (!parsed.success || !parsed.transactions?.length) fail(f, 'noRows');
           else {
             f.status = 'parsed'; f.headers = parsed.headers;
-            f.rows = parsed.transactions.map(row => Object.fromEntries(f.headers.map(h => [h, String(row[h] ?? '')])));
+            f.parserMode = classifyParserMode(parsed);
+            f.rows = mapTransactionRows(parsed);
             f.currency = explicitCurrency(result.text);
             f.pages = result.page_count;
             f.error = result.graphics_error ? strings.en.partialGraphics : '';
@@ -178,6 +190,7 @@ $('table-wrap').onchange = event => {
   if (!cell || !f || f.status !== 'parsed') return;
   f.rows[Number(cell.dataset.row)][f.headers[Number(cell.dataset.column)]] = cell.value;
   f.reviewed = false; f.edits++; $('review-state').textContent = t('changed'); $('reviewed').disabled = false;
+  renderDateObservation(f);
 };
 $('reviewed').onclick = () => { const f = files.find(f => f.id === selected); if (f) { f.reviewed = true; render(); } };
 $('currency').onchange = () => { const f = files.find(f => f.id === selected); if (f) { f.currency = $('currency').value; f.reviewed = false; render(); } };

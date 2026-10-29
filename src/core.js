@@ -95,3 +95,34 @@ export function failureDiagnostic(file, files) {
   const count = Array.isArray(files) ? files.filter(item => item?.status === 'failed').length : 0;
   return { schema: 'pdf-statement-batch-diagnostic-v1', app_version: '0.2.1', category, failed_count: count };
 }
+
+// These observations are not an accuracy or completeness check.
+export function dateObservations(headers, rows) {
+  const names = new Set(['date','transaction date','trans date','post date','posting date','posted date','value date','日期','交易日期','入账日期']);
+  const dates = (Array.isArray(headers) ? headers : []).filter(h => typeof h === 'string' && names.has(h.trim().toLowerCase().replace(/[_\s]+/g, ' ')));
+  if (!dates.length) return {kind:'no-date-column', count:0};
+  const empty = (Array.isArray(rows) ? rows : []).filter(row => dates.every(h => String(row?.[h] ?? '').trim() === '')).length;
+  return {kind:empty ? 'empty-date-rows' : 'none', count:empty};
+}
+
+// The text-based fallback uses lowercase object keys under these three display headers.
+export function mapTransactionRows(parsed) {
+  const headers = parsed.headers;
+  const textFallback = parsed.metadata?.parserType === 'text-based';
+  if (textFallback && !(headers.length === 3 && headers[0] === 'Date' && headers[1] === 'Description' && headers[2] === 'Amount')) {
+    throw new Error('Unsupported text-based fallback schema');
+  }
+  const aliases = {Date:'date', Description:'description', Amount:'amount'};
+  return parsed.transactions.map(row => Object.fromEntries(headers.map(h => {
+    if (textFallback && h === 'Amount') return [h, ''];
+    const hasExact = Object.prototype.hasOwnProperty.call(row, h);
+    const value = hasExact ? row[h] : textFallback ? row[aliases[h]] : undefined;
+    return [h, String(value ?? '')];
+  })));
+}
+
+// Unknown parser metadata cannot establish how amounts were derived.
+export function classifyParserMode(parsed) {
+  const mode = parsed?.metadata?.parserType;
+  return mode === 'text-based' ? 'text-based' : ['rectangle-based', 'position-based'].includes(mode) ? 'other' : 'unknown';
+}

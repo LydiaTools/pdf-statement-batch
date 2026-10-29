@@ -15,7 +15,7 @@ Process text-based PDFs in your browser, check the extracted rows and download a
 - Lets you correct cells, confirm currencies and mark a file reviewed.
 - Saves a self-contained batch ZIP with original PDFs, edits, file statuses and review progress; reopen it later to continue.
 - Exports matching column/currency groups into separate transaction sheets in one `.xlsx`; a **Files** sheet includes failures, cancellations and exact duplicates.
-- Preserves date text and keeps formula-looking descriptions as literal strings. Clear amount columns can use numeric cells; ambiguous or high-precision values remain text.
+- Preserves date text and keeps formula-looking descriptions as literal strings. Clear amount columns can use numeric cells; ambiguous or high-precision values that reach the workbook as text remain text. Text-based fallback parsing can change signs or precision, so the app leaves those amounts blank for you to enter from the original PDF.
 - Provides two original fictional PDFs so you can try the complete path without using a bank document.
 
 ## Try it
@@ -60,6 +60,8 @@ The current per-file limit is 50 MB. There is no universal bank-coverage, OCR, f
 ## Failure diagnostic
 
 When a file is marked failed, download a small diagnostic containing only a fixed error category, app preview version and failed-file count. This is not a redacted statement or a reproducible PDF. A parser initialization failure leaves files queued and has no per-file diagnostic. The fixed v0.2.0 release predates this feature; v0.2.1 includes it. [Details](docs/diagnostic-preview.md) · [中文](docs/diagnostic-preview.zh-CN.md)
+
+[Date observations and text-fallback amount handling](docs/date-observations.md) · [中文](docs/date-observations.zh-CN.md)
 
 ## Development
 

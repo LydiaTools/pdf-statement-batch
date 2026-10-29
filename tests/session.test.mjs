@@ -46,3 +46,7 @@ test('invalid schema, duplicate IDs, unknown entries and expansion bombs are rej
   new DataView(bomb.buffer).setUint32(offset+24,200*1024*1024,true);
   await assert.rejects(openBatch(bomb),/batchTooLarge/);
 });
+
+test('fallback mode persists and older batches reopen without silently marking amounts safe', async()=>{
+ const f=sample(1);f.parserMode='text-based';f.rows[0].Amount='-25.20';const bytes=await saveBatch([f],options);const round=await openBatch(bytes);assert.equal(round.files[0].parserMode,'text-based');assert.equal(round.files[0].rows[0].Amount,'-25.20');const legacy=await altered(bytes,m=>{delete m.files[0].parserMode});const restored=await openBatch(legacy);assert.equal(restored.files[0].parserMode,'unknown');assert.equal(restored.files[0].rows[0].Amount,'-25.20');const corrupt=await altered(bytes,m=>{m.files[0].parserMode='invented'});await assert.rejects(openBatch(corrupt),/invalidBatch/);
+});

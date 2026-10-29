@@ -57,6 +57,10 @@ No date locale is inferred. Currency is filled only from an explicit `Currency: 
 
 The current per-file limit is 50 MB. There is no universal bank-coverage, OCR, financial-accuracy or performance guarantee. Small synthetic fixtures are regression examples, not an accuracy benchmark.
 
+## Failure diagnostic (source preview)
+
+When a file is marked failed, download a small diagnostic containing only a fixed error category, app preview version and failed-file count. This is not a redacted statement or a reproducible PDF. A parser initialization failure leaves files queued and has no per-file diagnostic. The fixed v0.2.0 release does not include this source-preview feature. [Details](docs/diagnostic-preview.md) · [中文](docs/diagnostic-preview.zh-CN.md)
+
 ## Development
 
 ```sh

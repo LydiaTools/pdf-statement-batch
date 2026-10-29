@@ -86,3 +86,12 @@ export function workbookSheets(files, language = 'en') {
   };
   return [...data, accounting, notes];
 }
+
+// Only fixed diagnostic categories and counts may leave the tab through this export.
+export function failureDiagnostic(file, files) {
+  if (!file || file.status !== 'failed') return null;
+  const allowed = new Set(['unsupported', 'fileLimit', 'invalid', 'encrypted', 'noText', 'noRows', 'pdfTimeout']);
+  const category = allowed.has(file.errorKey) ? file.errorKey : 'unknown';
+  const count = Array.isArray(files) ? files.filter(item => item?.status === 'failed').length : 0;
+  return { schema: 'pdf-statement-batch-diagnostic-v1', app_version: '0.2.0+diagnostic-preview', category, failed_count: count };
+}

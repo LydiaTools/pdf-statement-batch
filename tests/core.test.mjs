@@ -29,3 +29,16 @@ test('actual workbook keeps literal formulas, raw dates and every file status', 
   assert.match(xml, /t="inlineStr"><is><t xml:space="preserve">01\/02\/2026<\/t>/);
   assert.match(xml, /<c r="G2" s="1"><v>0\.09<\/v>/); assert(!xml.includes('<f>'));
 });
+
+test('failure diagnostics use a fixed allowlist and never serialize file data', async () => {
+  const { failureDiagnostic } = await import('../src/core.js');
+  const secret = 'PRIVATE_SENTINEL_8791';
+  const file = {status:'failed', errorKey:'invalid', name:secret, hash:secret, error:secret, rows:[{account:secret}], headers:[secret], size:123456, pages:7};
+  const result = failureDiagnostic(file, [file,{status:'failed',errorKey:secret},{status:'parsed',name:secret}]);
+  assert.deepEqual(result, {schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.0+diagnostic-preview',category:'invalid',failed_count:2});
+  assert.doesNotMatch(JSON.stringify(result), /PRIVATE_SENTINEL|123456|account|pages|name|hash/);
+  assert.equal(failureDiagnostic({ ...file, errorKey:secret }, [file]).category, 'unknown');
+  assert.equal(failureDiagnostic({status:'queued'}, []), null);
+  assert.equal(failureDiagnostic({status:'parsed'}, []), null);
+  assert.equal(failureDiagnostic(null, []), null);
+});

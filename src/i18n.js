@@ -26,3 +26,6 @@ Object.assign(strings.zh, {
   batchTooLarge: '保存批次最多支持 100 MB 原文件、1,000 份文件。请拆分批次，或导出 Excel。',
   saveBatchFailed: '批次保存失败，文件和修改仍保留在当前标签页。'
 });
+
+Object.assign(strings.en, { diagnostic: 'Download diagnostic', diagnosticNote: 'Fixed error category and counts only. No PDF or transaction details; not an anonymized statement.' });
+Object.assign(strings.zh, { diagnostic: '下载诊断', diagnosticNote: '仅含固定错误类别和数量，不含 PDF 或交易明细；不是脱敏账单。' });

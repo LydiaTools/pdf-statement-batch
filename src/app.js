@@ -1,5 +1,5 @@
 import { parseWithPositions } from './vendor/parsers/generic-parser.js';
-import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError } from './core.js';
+import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError, failureDiagnostic } from './core.js';
 import { writeWorkbook } from './xlsx.js';
 import { strings } from './i18n.js';
 import { saveBatch, openBatch } from './session.js';
@@ -60,7 +60,14 @@ function renderSheet() {
   if (!f) { $('table-wrap').innerHTML = `<p class="sheet-empty">${t('selectFile')}</p>`; return; }
   if (f.status !== 'parsed') {
     const detail = f.status === 'duplicate' ? `${t('duplicateOf')} #${f.duplicateOf}` : t(f.errorKey || 'unprocessed');
-    $('table-wrap').innerHTML = `<div class="detail"><p class="${f.status === 'failed' ? 'error' : ''}">${escape(detail)}</p>${f.status === 'failed' ? `<button id="retry">${t('retry')}</button>` : ''}</div>`;
+    $('table-wrap').innerHTML = `<div class="detail"><p class="${f.status === 'failed' ? 'error' : ''}">${escape(detail)}</p>${f.status === 'failed' ? `<button id="retry">${t('retry')}</button> <button id="diagnostic">${t('diagnostic')}</button><p>${t('diagnosticNote')}</p>` : ''}</div>`;
+    const diagnostic = $('diagnostic');
+    if (diagnostic) diagnostic.onclick = () => {
+      const report = failureDiagnostic(f, files);
+      if (!report) return;
+      const bytes = new TextEncoder().encode(JSON.stringify(report, null, 2) + '\n');
+      downloadFile(bytes, 'application/json', 'statement-diagnostic.json');
+    };
     const retry = $('retry');
     if (retry) { retry.disabled = running; retry.onclick = () => { f.status = 'queued'; f.error = ''; f.errorKey = ''; render(); run(); }; }
     return;

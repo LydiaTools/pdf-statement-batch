@@ -6,7 +6,7 @@ const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const dist=resolve('dist');
 const server=createServer(async(req,res)=>{
   const pathname=new URL(req.url,'http://127.0.0.1').pathname;
-  if(pathname==='/worker.js' && !process.env.REAL_PARSER) {res.setHeader('Content-Type','text/javascript');res.end(`self.onmessage=({data})=>{if(!data.bytes)postMessage({id:data.id,ready:true});else setTimeout(()=>postMessage({id:data.id,result:{success:true,text:'01/01/2026 Sample 10.00\\n02/01/2026 Test 12.00',pages:[],page_count:1}}),200)};`);return;}
+  if(pathname==='/worker.js' && !process.env.REAL_PARSER) {res.setHeader('Content-Type','text/javascript');res.end(`self.onmessage=({data})=>{if(!data.bytes)postMessage({id:data.id,ready:true});else setTimeout(()=>postMessage({id:data.id,result:{success:true,text:'01/01/2026 Sample 10.00\\n02/01/2026 Test 12.00',pages:[],page_count:1}}),1500)};`);return;}
   const path=resolve(dist,pathname==='/'?'index.html':'.'+pathname);
   if(!path.startsWith(dist+'/')){res.writeHead(403);res.end();return;}
   try {res.setHeader('Content-Type',{'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json'}[extname(path)]||'application/octet-stream');res.end(await readFile(path));} catch {res.writeHead(404);res.end();}
@@ -38,7 +38,9 @@ try {
     await page.locator('#run').click();
     assert.equal(await page.locator('#retry').isDisabled(),true,'retry must remain disabled while another file is processed');
     await page.locator('.file').first().click();
-    const editing=page.locator('#table-wrap tbody tr').first().locator('textarea').nth(1);
+    const firstEdit=page.locator('#table-wrap tbody tr').first().locator('textarea').nth(1);
+    await firstEdit.fill('FIRST_BLURRED_SENTINEL'); await firstEdit.blur();
+    const editing=page.locator('#table-wrap tbody tr').nth(1).locator('textarea').nth(1);
     await editing.fill('UNBLURRED_SENTINEL');
     await page.waitForFunction(()=>document.querySelector('#cancel').disabled && document.querySelectorAll('.file-status')[2]?.textContent.includes('已提取'),null,{timeout:10000});
     assert.equal(await editing.inputValue(),'UNBLURRED_SENTINEL','unblurred edit must survive queue completion');
@@ -47,7 +49,7 @@ try {
     await page.locator('.file').nth(1).click();
     assert.equal(await page.locator('#retry').isEnabled(),true,'retry must re-enable after another file finishes');
     await page.locator('.file').first().click();
-    assert.equal(await page.locator('#table-wrap tbody tr').first().locator('textarea').nth(1).inputValue(),'UNBLURRED_SENTINEL','blurred edit must persist when revisiting');
+    assert.equal(await page.locator('#table-wrap tbody tr').nth(1).locator('textarea').nth(1).inputValue(),'UNBLURRED_SENTINEL','blurred edit must persist when revisiting');
     const workbook=page.waitForEvent('download'); await page.locator('#export').click(); await (await workbook).saveAs('test-results/unblurred-check.xlsx');
     assert.match(await page.locator('.file-status').first().textContent(),/已提取/);
   }

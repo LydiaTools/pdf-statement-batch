@@ -59,10 +59,13 @@ function renderDateObservation(file) {
   el.hidden = finding.kind === 'none';
   el.textContent = finding.kind === 'no-date-column' ? t('noDateColumn') : finding.kind === 'empty-date-rows' ? `${finding.count} ${t(finding.count === 1 ? 'oneEmptyDateRow' : 'emptyDateRows')}` : '';
 }
+function sheetKey(f) {
+  return JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language]);
+}
 function renderSheet() {
   const f = files.find(f => f.id === selected);
   renderDateObservation(f);
-  const signature = JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language]);
+  const signature = sheetKey(f);
   if (signature === sheetSignature) {
     const retry = $('retry');
     if (retry) retry.disabled = running;
@@ -198,6 +201,7 @@ $('table-wrap').onchange = event => {
   if (!cell || !f || f.status !== 'parsed') return;
   f.rows[Number(cell.dataset.row)][f.headers[Number(cell.dataset.column)]] = cell.value;
   f.reviewed = false; f.edits++; $('review-state').textContent = t('changed'); $('reviewed').disabled = false;
+  sheetSignature = sheetKey(f);
   renderDateObservation(f);
 };
 $('reviewed').onclick = () => { const f = files.find(f => f.id === selected); if (f) { f.reviewed = true; render(); } };

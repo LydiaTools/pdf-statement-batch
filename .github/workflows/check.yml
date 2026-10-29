@@ -30,6 +30,8 @@ jobs:
       - run: node tests/diagnostic-browser.mjs
       - run: node tests/date-observation-browser.mjs
       - run: node tests/amount-observation-browser.mjs
+      - run: node tests/export-text-browser.mjs
+      - run: python tests/verify-export-text.py
       - run: python tests/position-fixture.py
       - run: node tests/position-original-browser.mjs
       - run: python tests/verify-position-workbook.py

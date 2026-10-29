@@ -4,9 +4,11 @@
 
 在浏览器里处理文字型 PDF，检查和修改交易，导出明细与完整文件清单。支持中英文，不需要注册或 AI API 密钥。
 
-[打开中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [English app](https://lydiatools.github.io/pdf-statement-batch/) · [v0.2.1 预览版](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.1)
+[打开中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [English app](https://lydiatools.github.io/pdf-statement-batch/) · [v0.2.2 预览版](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.2)
 
 ![真实浏览器界面与虚构示例交易](public/assets/pdf-statement-batch-desktop-zh.png)
+
+关闭金额数字导出后，明细字段按文本导出，保留金额中的千位分隔符和前后空格。
 
 ## 操作
 

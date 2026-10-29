@@ -35,10 +35,19 @@ test('failure diagnostics use a fixed allowlist and never serialize file data', 
   const secret = 'PRIVATE_SENTINEL_8791';
   const file = {status:'failed', errorKey:'invalid', name:secret, hash:secret, error:secret, rows:[{account:secret}], headers:[secret], size:123456, pages:7};
   const result = failureDiagnostic(file, [file,{status:'failed',errorKey:secret},{status:'parsed',name:secret}]);
-  assert.deepEqual(result, {schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.1',category:'invalid',failed_count:2});
+  assert.deepEqual(result, {schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.2',category:'invalid',failed_count:2});
   assert.doesNotMatch(JSON.stringify(result), /PRIVATE_SENTINEL|123456|account|pages|name|hash/);
   assert.equal(failureDiagnostic({ ...file, errorKey:secret }, [file]).category, 'unknown');
   assert.equal(failureDiagnostic({status:'queued'}, []), null);
   assert.equal(failureDiagnostic({status:'parsed'}, []), null);
   assert.equal(failureDiagnostic(null, []), null);
+});
+
+
+test('text export keeps original amount text including grouping and spacing', () => {
+  const f = {...file(1,'USD',['Amount']),rows:[{Amount:'1,234.56'},{Amount:' -12.30 '},{Amount:'0.00'},{Amount:'1234567890123456.78'}]};
+  const rows=workbookSheets([f], 'en', false)[0].rows.slice(1);
+  assert.deepEqual(rows.map(row=>row[4]),[{text:'1,234.56'},{text:' -12.30 '},{text:'0.00'},{text:'1234567890123456.78'}]);
+  const numeric=workbookSheets([f], 'en', true)[0].rows.slice(1);
+  assert.deepEqual(numeric.map(row=>row[4]),[{number:'1234.56'},{number:'-12.30'},{number:'0.00'},{text:'1234567890123456.78'}]);
 });

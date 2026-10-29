@@ -1,8 +1,8 @@
 # Failure diagnostic
 
-Select a failed file and choose **Download diagnostic**. The JSON contains only a fixed format ID, the `0.2.1` version, a fixed error category, and the failed-file count. It does not include names, hashes, PDFs, transactions, free-form exceptions, exact sizes, page counts or timestamps. Unknown categories become `unknown`.
+Select a failed file and choose **Download diagnostic**. The JSON contains only a fixed format ID, the `0.2.2` version, a fixed error category, and the failed-file count. It does not include names, hashes, PDFs, transactions, free-form exceptions, exact sizes, page counts or timestamps. Unknown categories become `unknown`.
 
-Downloading does not send data. This is not a redacted statement and contains no reproducible layout. A user-created fictional sample may still be needed to debug parsing. The v0.2.1 preview includes this feature; the fixed v0.2.0 package does not.
+Downloading does not send data. This is not a redacted statement and contains no reproducible layout. A user-created fictional sample may still be needed to debug parsing. The v0.2.2 preview includes this feature; the fixed v0.2.0 package does not.
 
 If the parser runtime fails to initialize, files remain queued and this per-file button is not shown. Retry initialization first; this preview does not export a runtime-initialization diagnostic.
 

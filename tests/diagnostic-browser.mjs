@@ -26,7 +26,7 @@ try {
   await page.locator('#files').setInputFiles({name:'PRIVATE_SENTINEL_8791.txt',mimeType:'text/plain',buffer:Buffer.from('PRIVATE_SENTINEL_8791')});
   await page.locator('.file').nth(1).click();assert.equal(await page.locator('#diagnostic').count(),1);
   const wait=page.waitForEvent('download');await page.locator('#diagnostic').click();const d=await wait;assert.equal(d.suggestedFilename(),'statement-diagnostic.json');const contents=await readFile(await d.path(),'utf8');const report=JSON.parse(contents);
-  assert.deepEqual(report,{schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.1',category:'unsupported',failed_count:1});assert(!contents.includes('PRIVATE_SENTINEL'));
+  assert.deepEqual(report,{schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.2',category:'unsupported',failed_count:1});assert(!contents.includes('PRIVATE_SENTINEL'));
   await page.screenshot({path:'test-results/diagnostic-desktop.png'});await page.setViewportSize({width:390,height:844});await page.locator('#diagnostic').scrollIntoViewIfNeeded();await page.screenshot({path:'test-results/diagnostic-mobile.png'});const mobileDownload=page.waitForEvent('download');await page.locator('#diagnostic').click();const mobileContents=await readFile(await (await mobileDownload).path(),'utf8');assert.equal(mobileContents,contents);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.locator('#language').click();assert.equal(await page.locator('#diagnostic').textContent(),'下载诊断');
   await page.locator('#retry').click();await page.waitForFunction(()=>document.querySelector('#cancel').disabled);

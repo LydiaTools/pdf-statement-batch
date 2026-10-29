@@ -4,7 +4,7 @@
 
 Process text-based PDFs in your browser, check the extracted rows and download an Excel workbook with a complete file ledger. English and Chinese interfaces. No account or AI API key.
 
-[Open the app](https://lydiatools.github.io/pdf-statement-batch/) · [中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [Download v0.2.1 preview](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.1) · [中文说明](README.zh-CN.md)
+[Open the app](https://lydiatools.github.io/pdf-statement-batch/) · [中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [Download v0.2.2 preview](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.2) · [中文说明](README.zh-CN.md)
 
 ![Actual browser interface with two original sample PDFs and editable transaction rows](public/assets/pdf-statement-batch-desktop-en.png)
 
@@ -15,6 +15,7 @@ Process text-based PDFs in your browser, check the extracted rows and download a
 - Lets you correct cells, confirm currencies and mark a file reviewed.
 - Saves a self-contained batch ZIP with original PDFs, edits, file statuses and review progress; reopen it later to continue.
 - Exports matching column/currency groups into separate transaction sheets in one `.xlsx`; a **Files** sheet includes failures, cancellations and exact duplicates.
+- With numeric export turned off, keeps extracted transaction fields as text, including amount separators and surrounding spaces. Numeric export is optional.
 - Preserves date text and keeps formula-looking descriptions as literal strings. Clear amount columns can use numeric cells; ambiguous or high-precision values that reach the workbook as text remain text. Parsing can still misplace or omit amounts; compare each row with the original PDF. Text-based fallback parsing can change signs or precision, so the app leaves those amounts blank for you to enter from the original PDF.
 - Provides two original fictional PDFs so you can try the complete path without using a bank document.
 
@@ -22,7 +23,7 @@ Process text-based PDFs in your browser, check the extracted rows and download a
 
 Open the app, choose **Try two sample PDFs**, then **Process queue**. Inspect both files and select **Download Excel**. The samples are fictional; you do not need a bank statement to try it. First use needs a connection to download the parser runtime.
 
-The [release ZIP](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.1) includes a ready-to-serve `app/` folder. With Python 3, run this command from the extracted folder:
+The [release ZIP](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.2) includes a ready-to-serve `app/` folder. With Python 3, run this command from the extracted folder:
 
 ```sh
 python3 -m http.server 4173 --bind 127.0.0.1 --directory app

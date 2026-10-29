@@ -41,13 +41,13 @@ export function moneyHeader(header) {
   return /^(debit|credit|balance|amount|withdrawals?|deposits?|paid in|paid out)$/i.test(header.trim());
 }
 
-export function tableCell(value, header) {
+export function tableCell(value, header, numeric = true) {
   const text = String(value ?? '');
-  const n = moneyHeader(header) ? numericValue(text) : null;
+  const n = numeric && moneyHeader(header) ? numericValue(text) : null;
   return n === null ? { text } : { number: n };
 }
 
-export function workbookSheets(files, language = 'en') {
+export function workbookSheets(files, language = 'en', numeric = true) {
   const zh = language === 'zh';
   const data = groups(files).map((group, i) => ({
     name: `Transactions ${i + 1}`,
@@ -55,7 +55,7 @@ export function workbookSheets(files, language = 'en') {
       ['Source file', 'Source row', 'Currency', 'Reviewed', ...group.headers].map(text => ({ text })),
       ...group.files.flatMap(file => file.rows.map((row, index) => [
         { text: file.name }, { number: String(index + 1) }, { text: file.currency || 'Unconfirmed' },
-        { text: file.reviewed ? 'Yes' : 'No' }, ...group.headers.map(h => tableCell(row[h], h))
+        { text: file.reviewed ? 'Yes' : 'No' }, ...group.headers.map(h => tableCell(row[h], h, numeric))
       ]))
     ]
   }));
@@ -77,7 +77,7 @@ export function workbookSheets(files, language = 'en') {
         ['Source precision', 'Source filename and extracted row order. Exact PDF page/coordinates are not supplied by this parser.'],
         ['Review', 'Extraction is not accounting verification. Review source PDFs and extracted rows.'],
         ['Dates', 'Original text; no date locale is inferred or converted.'],
-        ['Numbers', 'Unambiguous amounts with at most 15 significant digits use numeric cells. Other values remain text.'],
+        ['Numbers', numeric ? 'Unambiguous amounts with at most 15 significant digits use numeric cells. Other values remain text.' : 'All extracted transaction fields are exported as text.'],
         ['Text safety', 'All text cells are literal strings, including text beginning with =, +, - or @.'],
         ['Groups', 'One transaction sheet per header/currency group. Unconfirmed currency files remain separate.'],
         ['File accounting', 'Files contains every selected file, including failures, cancellations and exact duplicates.'],
@@ -95,7 +95,7 @@ export function failureDiagnostic(file, files) {
   const allowed = new Set(['unsupported', 'fileLimit', 'invalid', 'encrypted', 'noText', 'noRows', 'pdfTimeout']);
   const category = allowed.has(file.errorKey) ? file.errorKey : 'unknown';
   const count = Array.isArray(files) ? files.filter(item => item?.status === 'failed').length : 0;
-  return { schema: 'pdf-statement-batch-diagnostic-v1', app_version: '0.2.1', category, failed_count: count };
+  return { schema: 'pdf-statement-batch-diagnostic-v1', app_version: '0.2.2', category, failed_count: count };
 }
 
 // These observations are not an accuracy or completeness check.

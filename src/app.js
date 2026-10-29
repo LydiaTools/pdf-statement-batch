@@ -208,10 +208,7 @@ $('reviewed').onclick = () => { const f = files.find(f => f.id === selected); if
 $('currency').onchange = () => { const f = files.find(f => f.id === selected); if (f) { f.currency = $('currency').value; f.reviewed = false; render(); } };
 $('export').onclick = () => {
   try {
-    const sheets = workbookSheets(files, language);
-    if (!$('numeric').checked) for (const sheet of sheets.filter(s => s.name.startsWith('Transactions'))) {
-      for (const row of sheet.rows.slice(1)) for (const cell of row.slice(4)) if (cell.number !== undefined) { cell.text = cell.number; delete cell.number; }
-    }
+    const sheets = workbookSheets(files, language, $('numeric').checked);
     const bytes = writeWorkbook(sheets);
     const url = URL.createObjectURL(new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
     const link = document.createElement('a'); link.href = url; link.download = 'pdf-statement-batch.xlsx'; link.click();

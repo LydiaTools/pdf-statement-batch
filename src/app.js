@@ -1,5 +1,5 @@
 import { parseWithPositions } from './vendor/parsers/generic-parser.js';
-import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError, failureDiagnostic, dateObservations, mapTransactionRows, classifyParserMode } from './core.js';
+import { explicitCurrency, groups, moneyHeader, workbookSheets, inputError, failureDiagnostic, dateObservations, emptyAmountObservations, mapTransactionRows, classifyParserMode } from './core.js';
 import { writeWorkbook } from './xlsx.js';
 import { strings } from './i18n.js';
 import { saveBatch, openBatch } from './session.js';
@@ -48,6 +48,10 @@ function render() {
 function renderDateObservation(file) {
   const el = $('date-observation');
   const amountEl = $('amount-observation');
+  const emptyAmountEl = $('amount-empty-observation');
+  const missingAmounts = file?.status === 'parsed' && file.parserMode !== 'text-based' ? emptyAmountObservations(file.headers, file.rows) : 0;
+  emptyAmountEl.hidden = !missingAmounts;
+  emptyAmountEl.textContent = missingAmounts ? `${missingAmounts} ${t(missingAmounts === 1 ? 'oneEmptyAmountRow' : 'emptyAmountRows')}` : '';
   amountEl.hidden = !file || file.status !== 'parsed' || file.parserMode === 'other';
   amountEl.textContent = amountEl.hidden ? '' : t(file.parserMode === 'text-based' ? 'fallbackAmount' : 'unknownAmount');
   if (!file || file.status !== 'parsed') { el.hidden = true; el.textContent = ''; return; }

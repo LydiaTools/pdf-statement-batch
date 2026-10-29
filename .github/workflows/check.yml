@@ -29,6 +29,10 @@ jobs:
           python scripts/schema_fixture.py
       - run: node tests/diagnostic-browser.mjs
       - run: node tests/date-observation-browser.mjs
+      - run: node tests/amount-observation-browser.mjs
+      - run: python tests/position-fixture.py
+      - run: node tests/position-original-browser.mjs
+      - run: python tests/verify-position-workbook.py
       - run: UNKNOWN_PARSER=1 node tests/date-observation-browser.mjs
       - run: node tests/fallback-browser.mjs
       - run: node tests/browser.mjs

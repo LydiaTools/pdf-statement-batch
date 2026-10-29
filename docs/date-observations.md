@@ -16,3 +16,5 @@ Two publicly available fictional statements were inspected from [bank-statement-
 | [bsb-002](https://raw.githubusercontent.com/bankstatemently/bank-statement-parsing-benchmark/2d8d31d68dcedbf9028b87f6c7df286f53a6c7de/datasets/basic/bsb-002/bsb-002-statement.pdf) | `3700a073ac1262173cbabbd5667cd3a59e04cf0b14e3a865ae25ce21089ab97d` | 15 transactions | 30 extracted rows, including continuation rows without dates |
 
 The date observation makes a missing-date symptom visible; it does not repair either layout or verify that all transactions were found. These two cases are neither an overall accuracy benchmark nor a ranking.
+
+An additional fictional three-column position-layout test retained the text in the ordinary amount column for a trailing minus, parentheses and zero, but assigned an extreme-precision amount to the description and left its amount cell empty. The empty-amount observation reports this visible symptom; it does not repair the layout or prove precision for other files.

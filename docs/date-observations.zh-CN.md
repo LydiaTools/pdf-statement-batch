@@ -16,3 +16,5 @@
 | [bsb-002](https://raw.githubusercontent.com/bankstatemently/bank-statement-parsing-benchmark/2d8d31d68dcedbf9028b87f6c7df286f53a6c7de/datasets/basic/bsb-002/bsb-002-statement.pdf) | `3700a073ac1262173cbabbd5667cd3a59e04cf0b14e3a865ae25ce21089ab97d` | 15 笔 | 30 行，包含无日期续行 |
 
 日期观察提示只显示无日期这一症状，并未修复这两种版式，也不能证明交易完整。两个样本不能代表整体准确率或排名。
+
+另一份虚构三列位置版式中，普通金额列的尾随负号、括号和零值文本得以保留，但一项极高精度金额被分配到描述列、金额单元为空。空金额提示只显示这一可见现象，不能修复版式，也不证明其他文件的精度。

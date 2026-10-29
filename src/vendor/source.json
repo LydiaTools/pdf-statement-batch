@@ -5,11 +5,6 @@
   "copyright": "2026 Priyanshu Dangi",
   "unmodifiedFiles": [
     {
-      "source": "client/js/parsers/position-parser.js",
-      "target": "src/vendor/parsers/position-parser.js",
-      "sha256": "d8d582e31cacc5f6f87873cde364ad48889f1f18dd7781823b4f907fa87b4e9b"
-    },
-    {
       "source": "client/js/parsers/rectangle-parser.js",
       "target": "src/vendor/parsers/rectangle-parser.js",
       "sha256": "be1b0beab5528f9ecc231640ac6628efdca8d6caa1d9fcfab23e0d32004195df"
@@ -33,5 +28,14 @@
   "fflate": {
     "version": "0.8.3",
     "license": "MIT"
-  }
+  },
+  "modifiedFiles": [
+    {
+      "source": "client/js/parsers/position-parser.js",
+      "target": "src/vendor/parsers/position-parser.js",
+      "upstreamSha256": "d8d582e31cacc5f6f87873cde364ad48889f1f18dd7781823b4f907fa87b4e9b",
+      "modifiedSha256": "f74bd3606632f125272d3db10b5346c5fcaa41a0bed14173286e797d15c27aed",
+      "change": "Retain original lowercase standardized column cells in a non-enumerable Symbol for application export; numeric aliases remain unchanged."
+    }
+  ]
 }

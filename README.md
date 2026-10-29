@@ -15,7 +15,7 @@ Process text-based PDFs in your browser, check the extracted rows and download a
 - Lets you correct cells, confirm currencies and mark a file reviewed.
 - Saves a self-contained batch ZIP with original PDFs, edits, file statuses and review progress; reopen it later to continue.
 - Exports matching column/currency groups into separate transaction sheets in one `.xlsx`; a **Files** sheet includes failures, cancellations and exact duplicates.
-- Preserves date text and keeps formula-looking descriptions as literal strings. Clear amount columns can use numeric cells; ambiguous or high-precision values that reach the workbook as text remain text. Text-based fallback parsing can change signs or precision, so the app leaves those amounts blank for you to enter from the original PDF.
+- Preserves date text and keeps formula-looking descriptions as literal strings. Clear amount columns can use numeric cells; ambiguous or high-precision values that reach the workbook as text remain text. Parsing can still misplace or omit amounts; compare each row with the original PDF. Text-based fallback parsing can change signs or precision, so the app leaves those amounts blank for you to enter from the original PDF.
 - Provides two original fictional PDFs so you can try the complete path without using a bank document.
 
 ## Try it

@@ -2,7 +2,7 @@
 
 PDF Statement Batch's batch queue, bilingual interface, review controls, file accounting, workbook writer, cache behavior and original synthetic test materials are by LydiaTools.
 
-The PDF layout extractor and four JavaScript parser modules are reused **unmodified** from [PriyanshuDangi/localbankstatementconverter](https://github.com/PriyanshuDangi/localbankstatementconverter/tree/6a25c6fb1ec720bc8444e529fe004cc779ce1d5a), commit `6a25c6fb1ec720bc8444e529fe004cc779ce1d5a`, under the MIT license. Copyright (c) 2026 Priyanshu Dangi. The complete original license is in `src/vendor/LICENSE-localbankstatementconverter.txt`, and file hashes are in `src/vendor/source.json`. This project is not an upstream endorsement or a wholly original PDF parser.
+The PDF layout extractor and four JavaScript parser modules are adapted from [PriyanshuDangi/localbankstatementconverter](https://github.com/PriyanshuDangi/localbankstatementconverter/tree/6a25c6fb1ec720bc8444e529fe004cc779ce1d5a), commit `6a25c6fb1ec720bc8444e529fe004cc779ce1d5a`, under the MIT license. Copyright (c) 2026 Priyanshu Dangi. The complete original license is in `src/vendor/LICENSE-localbankstatementconverter.txt`, and file hashes are in `src/vendor/source.json`. The position parser has a local modification to retain raw text for lower-case standardized columns; the remaining vendored parser and extractor files are unmodified. This project is not an upstream endorsement or a wholly original PDF parser.
 
 ZIP compression uses fflate 0.8.3, MIT; the original license is in `src/vendor/LICENSE-fflate.txt`.
 

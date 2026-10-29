@@ -26,6 +26,9 @@
 
 import { parseAmount, cleanDescription, createResult, DATE_PATTERNS, END_OF_TABLE_PATTERNS } from './base-parser.js';
 
+// Local adaptation: retain colliding original cell text out of enumerable user columns.
+const POSITION_RAW_CELLS = Symbol('position-raw-cells');
+
 // Header pattern keywords for table detection
 const HEADER_PATTERNS = {
     dateKeywords: ['date', 'trans date', 'tran date', 'transaction date', 'posted', 'post date', 'value date'],
@@ -1462,6 +1465,7 @@ function parseTableToTransactions(rows, columns) {
         // Build transaction object using original column names as keys
         // This matches the headers which preserve original casing
         const transaction = {};
+        const rawCollisionCells = Object.create(null);
         let hasData = false;
 
         for (let i = 0; i < columns.length && i < cellValues.length; i++) {
@@ -1473,6 +1477,9 @@ function parseTableToTransactions(rows, columns) {
                 value = cleanDescription(value);
             }
             
+            // Preserve text before standardized lowercase numeric aliases can overwrite it.
+            if (['date', 'description', 'amount', 'balance'].includes(colName)) rawCollisionCells[colName] = cellValues[i] || '';
+
             // Parse amount/balance columns as numbers where possible
             const colNameLower = columns[i].name.toLowerCase();
             if (colNameLower.includes('amount') || colNameLower.includes('balance') ||
@@ -1491,6 +1498,8 @@ function parseTableToTransactions(rows, columns) {
             }
         }
         
+        Object.defineProperty(transaction, POSITION_RAW_CELLS, { value: rawCollisionCells });
+
         // Also add standardized properties for compatibility with existing code
         if (colTypes.dateCol >= 0) {
             transaction.date = cellValues[colTypes.dateCol] || '';
@@ -1829,5 +1838,6 @@ export {
     flattenWords,
     
     // Constants
+    POSITION_RAW_CELLS,
     HEADER_PATTERNS
 };

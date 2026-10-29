@@ -1,3 +1,5 @@
+import { POSITION_RAW_CELLS } from './vendor/parsers/position-parser.js';
+
 export const STATUSES = ['queued', 'processing', 'parsed', 'failed', 'canceled', 'duplicate'];
 
 export function inputError(file) {
@@ -105,6 +107,14 @@ export function dateObservations(headers, rows) {
   return {kind:empty ? 'empty-date-rows' : 'none', count:empty};
 }
 
+// Observes empty recognized transaction-amount cells; it does not assess completeness.
+export function emptyAmountObservations(headers, rows) {
+  const names = new Set(['amount','debit','credit','deposit','deposits','withdrawal','withdrawals','paid in','paid out','money in','money out','dr','cr','金额','借方','贷方']);
+  const amounts = (Array.isArray(headers) ? headers : []).filter(h => typeof h === 'string' && names.has(h.trim().toLowerCase().replace(/^(?:[$£€¥₹]|usd\b|eur\b|gbp\b)\s*/i, '').replace(/[_\s]+/g, ' ')));
+  if (!amounts.length) return 0;
+  return (Array.isArray(rows) ? rows : []).filter(row => amounts.every(h => String(row?.[h] ?? '').trim() === '')).length;
+}
+
 // The text-based fallback uses lowercase object keys under these three display headers.
 export function mapTransactionRows(parsed) {
   const headers = parsed.headers;
@@ -115,6 +125,12 @@ export function mapTransactionRows(parsed) {
   const aliases = {Date:'date', Description:'description', Amount:'amount'};
   return parsed.transactions.map(row => Object.fromEntries(headers.map(h => {
     if (textFallback && h === 'Amount') return [h, ''];
+    if (parsed.metadata?.parserType === 'position-based' && ['date', 'description', 'amount', 'balance'].includes(h)) {
+      const original = row?.[POSITION_RAW_CELLS];
+      if (original && Object.hasOwn(original, h)) return [h, String(original[h] ?? '')];
+      // A numeric alias without its raw provenance may already have lost precision or sign.
+      if (typeof row?.[h] === 'number') return [h, ''];
+    }
     const hasExact = Object.prototype.hasOwnProperty.call(row, h);
     const value = hasExact ? row[h] : textFallback ? row[aliases[h]] : undefined;
     return [h, String(value ?? '')];
@@ -124,5 +140,6 @@ export function mapTransactionRows(parsed) {
 // Unknown parser metadata cannot establish how amounts were derived.
 export function classifyParserMode(parsed) {
   const mode = parsed?.metadata?.parserType;
+  if (mode === 'position-based' && (parsed.headers || []).some(h => (h === 'amount' || h === 'balance') && (parsed.transactions || []).some(row => typeof row?.[h] === 'number' && !Object.hasOwn(row?.[POSITION_RAW_CELLS] || {}, h)))) return 'unknown';
   return mode === 'text-based' ? 'text-based' : ['rectangle-based', 'position-based'].includes(mode) ? 'other' : 'unknown';
 }

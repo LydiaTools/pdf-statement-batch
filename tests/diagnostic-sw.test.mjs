@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 const source=await readFile('public/sw.js','utf8');
 async function run(fail=false){
- const handlers={}, prior='pdf-statement-batch-preview-2', next='pdf-statement-batch-preview-3';
+ const handlers={}, prior='pdf-statement-batch-preview-2', next='pdf-statement-batch-preview-4';
  const runtime='https://cdn.jsdelivr.net/pyodide/v0.29.3/full/example.js', missing='https://cdn.jsdelivr.net/pyodide/v0.29.3/full/missing.js', local='http://localhost/core.js';
  const stores=new Map([[prior,new Map([[runtime,'old runtime'],[missing,'old missing runtime'],[local,'old code']])],[next,new Map([[local,'new code'],[runtime,'new runtime']])]]);
  const caches={async keys(){return [...stores.keys()]},async delete(k){return stores.delete(k)},async open(k){const m=stores.get(k);return {async keys(){return [...m.keys()].map(url=>({url}))},async match(r){return m.get(typeof r==='string'?r:r.url)},async put(r,v){if(fail)throw Error('storage failure');m.set(r.url,v)}}}};

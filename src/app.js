@@ -47,7 +47,7 @@ function render() {
 }
 function renderSheet() {
   const f = files.find(f => f.id === selected);
-  const signature = JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language]);
+  const signature = JSON.stringify([f?.id,f?.status,f?.currency,f?.reviewed,f?.edits,f?.error,language,running]);
   if (signature === sheetSignature) return;
   sheetSignature = signature;
   $('review-controls').hidden = f?.status !== 'parsed';

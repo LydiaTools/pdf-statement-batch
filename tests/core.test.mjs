@@ -35,7 +35,7 @@ test('failure diagnostics use a fixed allowlist and never serialize file data', 
   const secret = 'PRIVATE_SENTINEL_8791';
   const file = {status:'failed', errorKey:'invalid', name:secret, hash:secret, error:secret, rows:[{account:secret}], headers:[secret], size:123456, pages:7};
   const result = failureDiagnostic(file, [file,{status:'failed',errorKey:secret},{status:'parsed',name:secret}]);
-  assert.deepEqual(result, {schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.0+diagnostic-preview',category:'invalid',failed_count:2});
+  assert.deepEqual(result, {schema:'pdf-statement-batch-diagnostic-v1',app_version:'0.2.1',category:'invalid',failed_count:2});
   assert.doesNotMatch(JSON.stringify(result), /PRIVATE_SENTINEL|123456|account|pages|name|hash/);
   assert.equal(failureDiagnostic({ ...file, errorKey:secret }, [file]).category, 'unknown');
   assert.equal(failureDiagnostic({status:'queued'}, []), null);

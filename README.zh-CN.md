@@ -4,7 +4,7 @@
 
 在浏览器里处理文字型 PDF，检查和修改交易，导出明细与完整文件清单。支持中英文，不需要注册或 AI API 密钥。
 
-[打开中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [English app](https://lydiatools.github.io/pdf-statement-batch/) · [v0.2.0 预览版](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.0)
+[打开中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [English app](https://lydiatools.github.io/pdf-statement-batch/) · [v0.2.1 预览版](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.1)
 
 ![真实浏览器界面与虚构示例交易](public/assets/pdf-statement-batch-desktop-zh.png)
 
@@ -46,9 +46,9 @@ PDF 与提取结果只保留在当前标签页，不上传、不调用 AI、不�
 
 支持文字型 PDF，单份不超过 50 MB。扫描件需先识别，加密文件需先解锁。解析不等于财务核验，陌生格式可能漏行、错列。来源标记为文件和提取行序，不是精确 PDF 页码。币种只读取明确的 `Currency: XXX` 字段或由你选择；未确认币种的文件分别成表。不会根据金额删除不同文件里的交易。
 
-## 失败诊断（源码预览）
+## 失败诊断
 
-文件标为失败时，可下载仅含固定错误类别、预览版本与失败数量的诊断。它不是脱敏账单，也不含可复现 PDF。解析环境初始化失败时文件仍待处理，不显示单文件诊断。固定发行版 v0.2.0 不包含本源码预览功能。[详细说明](docs/diagnostic-preview.zh-CN.md) · [English](docs/diagnostic-preview.md)
+文件标为失败时，可下载仅含固定错误类别、预览版本与失败数量的诊断。它不是脱敏账单，也不含可复现 PDF。解析环境初始化失败时文件仍待处理，不显示单文件诊断。固定发行版 v0.2.0 不包含此功能，v0.2.1 已包含。[详细说明](docs/diagnostic-preview.zh-CN.md) · [English](docs/diagnostic-preview.md)
 
 ## 致谢
 

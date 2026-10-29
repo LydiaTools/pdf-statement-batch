@@ -4,7 +4,7 @@
 
 Process text-based PDFs in your browser, check the extracted rows and download an Excel workbook with a complete file ledger. English and Chinese interfaces. No account or AI API key.
 
-[Open the app](https://lydiatools.github.io/pdf-statement-batch/) · [中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [Download v0.2.0 preview](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.0) · [中文说明](README.zh-CN.md)
+[Open the app](https://lydiatools.github.io/pdf-statement-batch/) · [中文版](https://lydiatools.github.io/pdf-statement-batch/?lang=zh) · [Download v0.2.1 preview](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.1) · [中文说明](README.zh-CN.md)
 
 ![Actual browser interface with two original sample PDFs and editable transaction rows](public/assets/pdf-statement-batch-desktop-en.png)
 
@@ -22,7 +22,7 @@ Process text-based PDFs in your browser, check the extracted rows and download a
 
 Open the app, choose **Try two sample PDFs**, then **Process queue**. Inspect both files and select **Download Excel**. The samples are fictional; you do not need a bank statement to try it. First use needs a connection to download the parser runtime.
 
-The [release ZIP](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.0) includes a ready-to-serve `app/` folder. With Python 3, run this command from the extracted folder:
+The [release ZIP](https://github.com/LydiaTools/pdf-statement-batch/releases/tag/v0.2.1) includes a ready-to-serve `app/` folder. With Python 3, run this command from the extracted folder:
 
 ```sh
 python3 -m http.server 4173 --bind 127.0.0.1 --directory app
@@ -57,9 +57,9 @@ No date locale is inferred. Currency is filled only from an explicit `Currency: 
 
 The current per-file limit is 50 MB. There is no universal bank-coverage, OCR, financial-accuracy or performance guarantee. Small synthetic fixtures are regression examples, not an accuracy benchmark.
 
-## Failure diagnostic (source preview)
+## Failure diagnostic
 
-When a file is marked failed, download a small diagnostic containing only a fixed error category, app preview version and failed-file count. This is not a redacted statement or a reproducible PDF. A parser initialization failure leaves files queued and has no per-file diagnostic. The fixed v0.2.0 release does not include this source-preview feature. [Details](docs/diagnostic-preview.md) · [中文](docs/diagnostic-preview.zh-CN.md)
+When a file is marked failed, download a small diagnostic containing only a fixed error category, app preview version and failed-file count. This is not a redacted statement or a reproducible PDF. A parser initialization failure leaves files queued and has no per-file diagnostic. The fixed v0.2.0 release predates this feature; v0.2.1 includes it. [Details](docs/diagnostic-preview.md) · [中文](docs/diagnostic-preview.zh-CN.md)
 
 ## Development
 

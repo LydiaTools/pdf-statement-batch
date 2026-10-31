@@ -23,6 +23,7 @@ jobs:
       - run: python -m pip install reportlab==4.4.9 Pillow==13.0.0 openpyxl==3.1.5
       - run: npm test
       - run: node scripts/build.mjs
+      - run: npm run test:network
       - run: |
           for start in 0 100 200 300 400; do python scripts/large_fixture_batch.py --start "$start"; done
           python scripts/failure_fixtures.py

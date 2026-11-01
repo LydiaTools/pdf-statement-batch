@@ -7,7 +7,8 @@
     "build": "node scripts/build.mjs",
     "test": "node --test tests/core.test.mjs tests/session.test.mjs tests/diagnostic-sw.test.mjs tests/date-observation.test.mjs tests/fallback-map.test.mjs tests/position-original.test.mjs",
     "test:browser": "node tests/browser.mjs",
-    "test:network": "node tests/network-boundary.mjs"
+    "test:network": "node tests/network-boundary.mjs",
+    "test:network:sw": "node tests/network-service-worker.mjs"
   },
   "devDependencies": { "playwright": "1.62.1" }
 }

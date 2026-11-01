@@ -24,6 +24,7 @@ jobs:
       - run: npm test
       - run: node scripts/build.mjs
       - run: npm run test:network
+      - run: npm run test:network:sw
       - run: |
           for start in 0 100 200 300 400; do python scripts/large_fixture_batch.py --start "$start"; done
           python scripts/failure_fixtures.py
